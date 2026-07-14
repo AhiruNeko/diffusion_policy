@@ -1,73 +1,64 @@
 #!/bin/bash
 # ============================================================================
 # Diffusion Policy 复现 — 通用环境配置脚本
-# 服务器上无 conda，使用 Python venv 虚拟环境
+# 支持 conda 和 venv 两种方式，自动检测
 # ============================================================================
 
-# 项目根目录（自动检测）
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-
-# venv 路径
-VENV_DIR="${VENV_DIR:-$PROJECT_DIR/venv}"
-
-# 结果根目录
 RESULTS_BASE="${RESULTS_BASE:-$PROJECT_DIR/results}"
 
-# ========== 环境激活 ==========
+# ========== 环境激活（自动检测）==========
 setup_env() {
-    if [ ! -d "$VENV_DIR" ]; then
-        echo "错误：找不到 venv 环境 $VENV_DIR"
-        echo "请先运行: sbatch slurm_scripts/00_env/setup_env.sh"
+    # 优先 conda
+    if command -v conda &>/dev/null && conda env list 2>/dev/null | grep -q robodiff; then
+        source "$(conda info --base)/etc/profile.d/conda.sh" 2>/dev/null || true
+        conda activate robodiff
+    # 其次 venv
+    elif [ -f "$PROJECT_DIR/venv/bin/activate" ]; then
+        source "$PROJECT_DIR/venv/bin/activate"
+    # 初次使用：自动创建
+    elif [ -f "$PROJECT_DIR/setup_venv.sh" ]; then
+        echo "未找到环境，正在自动创建..."
+        bash "$PROJECT_DIR/setup_venv.sh"
+        source "$PROJECT_DIR/venv/bin/activate"
+    else
+        echo "错误：找不到 robodiff 环境"
+        echo "请运行: bash $PROJECT_DIR/setup_venv.sh"
         exit 1
     fi
-    source "$VENV_DIR/bin/activate"
-    echo "环境就绪：$(python --version), PyTorch $(python -c 'import torch; print(torch.__version__)')"
+    echo "环境就绪: $(python --version), PyTorch $(python -c 'import torch; print(torch.__version__)')"
 }
 
-# ========== 结果目录管理 ==========
+# ========== 结果目录 ==========
 create_result_dir() {
-    local phase=$1
-    local task=$2
-    local method=$3
-    local seed=${4:-42}
+    local phase=$1 task=$2 method=$3 seed=${4:-42}
     local dir="$RESULTS_BASE/$phase/${task}/${method}/seed_${seed}"
     mkdir -p "$dir"
     echo "$dir"
 }
 
-# ========== 保存结果摘要 ==========
+# ========== 保存结果 ==========
 save_summary() {
-    local result_dir=$1
-    local task_name=$2
-    local expected_max=$3
-    local expected_avg=$4
-    local ckpt_dir="$result_dir/checkpoints"
-    local summary_file="$result_dir/summary.txt"
+    local result_dir=$1 task_name=$2 expected_max=$3 expected_avg=$4
+    local ckpt_dir="$result_dir/checkpoints" summary_file="$result_dir/summary.txt"
     {
         echo "=========================================="
         echo "Diffusion Policy 复现结果"
-        echo "任务: $task_name"
-        echo "预期: max=$expected_max, avg=$expected_avg"
+        echo "任务: $task_name | 预期: max=$expected_max, avg=$expected_avg"
         echo "日期: $(date)"
         echo "=========================================="
-        echo ""
-        echo "检查点指标:"
         if [ -d "$ckpt_dir" ]; then
-            for ckpt in "$ckpt_dir"/epoch=*-test_mean_score=*.ckpt; do
-                [ -f "$ckpt" ] && echo "  $(basename $ckpt)"
+            ls "$ckpt_dir"/epoch=*-test_mean_score=*.ckpt 2>/dev/null | while read f; do
+                echo "  $(basename $f)"
             done
-            echo ""
             local scores=$(ls "$ckpt_dir"/epoch=*-test_mean_score=*.ckpt 2>/dev/null | \
                 sed 's/.*test_mean_score=\([0-9.]*\).ckpt/\1/' | sort -n)
             if [ -n "$scores" ]; then
-                local max_score=$(echo "$scores" | tail -1)
-                local last10=$(echo "$scores" | tail -10 | awk '{sum+=$1; n++} END {if(n>0) print sum/n}')
-                echo "实际指标:"
-                echo "  Max score:     $max_score  (预期: $expected_max)"
-                echo "  Avg last 10:   $last10    (预期: $expected_avg)"
+                local max_s=$(echo "$scores" | tail -1)
+                local avg10=$(echo "$scores" | tail -10 | awk '{sum+=$1; n++} END {if(n>0) print sum/n}')
+                echo "Max score: $max_s (预期: $expected_max)"
+                echo "Avg last 10: $avg10 (预期: $expected_avg)"
             fi
-        else
-            echo "  (训练未完成或无检查点)"
         fi
     } > "$summary_file"
     cat "$summary_file"

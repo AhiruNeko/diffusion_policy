@@ -92,3 +92,10 @@ coverage.xml
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Generated
+.hydra/
+train.log
+*.tar.gz
+packages/
+venv/
