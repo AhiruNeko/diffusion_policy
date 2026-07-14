@@ -1,14 +1,19 @@
 #!/bin/bash
+#SBATCH --job-name=dp_setup_venv
+#SBATCH --partition=short
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --time=12:00:00
+#SBATCH --output=logs/setup_venv_%j.out
 # ============================================================================
 # setup_venv.sh — 使用 Python venv 配置 Diffusion Policy 环境
 # 不需要 conda，只需要 Python 3.9+
 #
 # 用法:
-#   bash setup_venv.sh                    # 创建并配置环境
-#   source venv/bin/activate              # 激活
+#   bash setup_venv.sh                    # 直接运行
+#   sbatch setup_venv.sh                  # Slurm 提交
+#   source venv/bin/activate              # 激活环境
 #
-# 本地验证:
-#   bash setup_venv.sh --verify           # 创建+安装+验证
 # ============================================================================
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
