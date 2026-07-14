@@ -53,73 +53,74 @@ create_venv() {
     info "创建 venv..."
     "$PYTHON" -m venv "$VENV_DIR" --copies
     source "$VENV_DIR/bin/activate"
-    pip install --upgrade pip -q
+    info "pip 版本: $($PIP --version 2>/dev/null || pip --version)"
 }
 
 # ---------- 安装依赖 ----------
 install_deps() {
     source "$VENV_DIR/bin/activate"
+    PIP="$(command -v pip3 || command -v pip || echo pip)"
 
     # 1. PyTorch
     info "第 1 步: 安装 PyTorch..."
-    pip install "$TORCH" "$TORCHV" --index-url "https://download.pytorch.org/whl/$CUDA_VER"
+    $PIP install "$TORCH" "$TORCHV" --index-url "https://download.pytorch.org/whl/$CUDA_VER"
 
     # 2. 核心科学计算包
     info "第 2 步: 安装核心依赖..."
-    pip install numpy==1.23.3 scipy==1.9.1 matplotlib==3.6.1
-    pip install opencv-python==4.6.0 Pillow==9.2.0
-    pip install h5py==3.7.0 zarr==2.12.0 numcodecs==0.10.2
+    $PIP install numpy==1.23.3 scipy==1.9.1 matplotlib==3.6.1
+    $PIP install opencv-python==4.6.0 Pillow==9.2.0
+    $PIP install h5py==3.7.0 zarr==2.12.0 numcodecs==0.10.2
 
     # 3. 深度学习框架
     info "第 3 步: 安装 ML 框架..."
-    pip install diffusers==0.11.1 einops==0.4.1 accelerate==0.13.2
-    pip install hydra-core==1.2.0 wandb==0.13.3
-    pip install tensorboard==2.10.1 tensorboardX==2.5.1
-    pip install pytorch3d==0.7.0 2>/dev/null || warn "pytorch3d 跳过（不影响训练）"
+    $PIP install diffusers==0.11.1 einops==0.4.1 accelerate==0.13.2
+    $PIP install hydra-core==1.2.0 wandb==0.13.3
+    $PIP install tensorboard==2.10.1 tensorboardX==2.5.1
+    $PIP install pytorch3d==0.7.0 2>/dev/null || warn "pytorch3d 跳过（不影响训练）"
 
     # 4. 强化学习/机器人
     info "第 4 步: 安装 RL/机器人库..."
-    pip install gym==0.21.0 pymunk==6.2.1
-    pip install free-mujoco-py==2.1.6 2>/dev/null || warn "free-mujoco-py 跳过（评估时需要，训练不需要）"
-    pip install robosuite@https://github.com/cheng-chi/robosuite/archive/277ab9588ad7a4f4b55cf75508b44aa67ec171f0.tar.gz 2>/dev/null || warn "robosuite 跳过"
-    pip install pybullet-svl==3.1.6.4 2>/dev/null || warn "pybullet 跳过"
-    pip install robomimic==0.2.0 2>/dev/null || warn "robomimic 跳过"
+    $PIP install gym==0.21.0 pymunk==6.2.1
+    $PIP install free-mujoco-py==2.1.6 2>/dev/null || warn "free-mujoco-py 跳过"
+    $PIP install robosuite@https://github.com/cheng-chi/robosuite/archive/277ab9588ad7a4f4b55cf75508b44aa67ec171f0.tar.gz 2>/dev/null || warn "robosuite 跳过"
+    $PIP install pybullet-svl==3.1.6.4 2>/dev/null || warn "pybullet 跳过"
+    $PIP install robomimic==0.2.0 2>/dev/null || warn "robomimic 跳过"
 
     # 5. 数据处理
     info "第 5 步: 安装数据处理库..."
-    pip install scikit-image==0.19.3 scikit-video==1.1.11
-    pip install imageio==2.22.0 imageio-ffmpeg==0.4.7
-    pip install Cython==0.29.32
-    pip install av==10.0.0 2>/dev/null || warn "av 跳过（需要系统安装 ffmpeg 库）"
+    $PIP install scikit-image==0.19.3 scikit-video==1.1.11
+    $PIP install imageio==2.22.0 imageio-ffmpeg==0.4.7
+    $PIP install Cython==0.29.32
+    $PIP install av==10.0.0 2>/dev/null || warn "av 跳过"
 
     # 6. 工具库
     info "第 6 步: 安装工具库..."
-    pip install tqdm==4.64.1 click==8.0.4 psutil==5.9.2
-    pip install dill==0.3.5.1 shapely==1.8.4
-    pip install termcolor==2.0.1 threadpoolctl==3.1.0
-    pip install boto3==1.24.96 datasets==2.6.1
-    pip install cmake==3.24.3
-    pip install pytorchvideo==0.1.5 2>/dev/null || warn "pytorchvideo 跳过"
-    pip install imagecodecs==2022.9.26
-    pip install pygame==2.1.2
-    pip install ray[default,tune]==2.2.0
-    pip install dm-control==1.0.9 --no-deps 2>/dev/null || warn "dm-control 跳过"
-    pip install r3m@https://github.com/facebookresearch/r3m/archive/b2334e726887fa0206962d7984c69c5fb09cceab.tar.gz 2>/dev/null || warn "r3m 跳过"
+    $PIP install tqdm==4.64.1 click==8.0.4 psutil==5.9.2
+    $PIP install dill==0.3.5.1 shapely==1.8.4
+    $PIP install termcolor==2.0.1 threadpoolctl==3.1.0
+    $PIP install boto3==1.24.96 datasets==2.6.1
+    $PIP install cmake==3.24.3
+    $PIP install pytorchvideo==0.1.5 2>/dev/null || warn "pytorchvideo 跳过"
+    $PIP install imagecodecs==2022.9.26
+    $PIP install pygame==2.1.2
+    $PIP install ray[default,tune]==2.2.0
+    $PIP install dm-control==1.0.9 --no-deps 2>/dev/null || warn "dm-control 跳过"
+    $PIP install r3m@https://github.com/facebookresearch/r3m/archive/b2334e726887fa0206962d7984c69c5fb09cceab.tar.gz 2>/dev/null || warn "r3m 跳过"
 
     # 8. 安装项目
     info "第 8 步: 安装项目..."
-    pip install -e "$PROJECT_DIR"
+    $PIP install -e "$PROJECT_DIR"
 
-    # 9. 修复 numpy 版本兼容性
+    # 9. 修复兼容性
     info "第 9 步: 修复兼容性..."
-    pip install "numpy<2" huggingface_hub==0.20.0 parameterized -q
+    $PIP install "numpy<2" huggingface_hub==0.20.0 parameterized -q
 
-    # 10. 确保核心训练包已安装
+    # 10. 确保核心训练包
     info "第 10 步: 确认核心包..."
     for pkg in gym wandb zarr; do
         python -c "import $pkg" 2>/dev/null || {
-            warn "$pkg 未安装，重试（宽松版本）..."
-            pip install "$pkg" -q 2>/dev/null || warn "$pkg 跳过"
+            warn "$pkg 未安装，重试..."
+            $PIP install "$pkg" -q 2>/dev/null || warn "$pkg 跳过"
         }
     done
 }
