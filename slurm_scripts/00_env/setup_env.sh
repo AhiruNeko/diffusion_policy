@@ -1,55 +1,46 @@
 #!/bin/sh
 #SBATCH --job-name=dp_setup_env
 #SBATCH --partition=short
-#SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=8G
-#SBATCH --time=00:30:00
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --time=01:00:00
 #SBATCH --output=logs/dp_setup_env_%j.out
 # ============================================
-# 环境初始化脚本
-# 作用：在 GPU 节点上解压 conda 环境
-# 只需在第一次使用前跑一次
+# 环境初始化脚本（纯 venv 版）
+# 不需要 conda，用 Python 自带的 venv
 # 用法：sbatch slurm_scripts/00_env/setup_env.sh
 # ============================================
 
 echo "===== 开始配置环境 ====="
 echo "主机名: $(hostname)"
-echo "用户: $USER"
-echo "工作目录: $(pwd)"
+echo "Python: $(python3 --version)"
 
-# 设置 Conda 路径
-CONDA_BASE="${CONDA_BASE:-$HOME/miniconda3}"
-ENV_NAME="robodiff"
-ENV_PATH="$CONDA_BASE/envs/$ENV_NAME"
-TARBALL="robodiff_env.tar.gz"
+# 1. 创建虚拟环境
+echo "创建 venv 虚拟环境..."
+python3 -m venv venv
+source venv/bin/activate
 
-# 1. 检查环境包是否存在
-if [ ! -f "$TARBALL" ]; then
-    echo "错误：找不到 $TARBALL"
-    echo "请确认压缩包在项目根目录"
-    exit 1
-fi
+# 2. 安装 PyTorch（单独指定 CUDA 版本）
+echo "安装 PyTorch..."
+pip install torch==1.12.1 torchvision==0.13.1 \
+    --index-url https://download.pytorch.org/whl/cu116
 
-# 2. 解压环境
-echo "解压环境到: $ENV_PATH"
-mkdir -p "$ENV_PATH"
-tar -xzf "$TARBALL" -C "$ENV_PATH"
-echo "环境解压完成"
+# 3. 安装所有依赖
+echo "安装其余依赖..."
+pip install -r requirements_frozen.txt
 
-# 3. 验证
-echo "===== 验证环境 ====="
-source "$CONDA_BASE/etc/profile.d/conda.sh"
-conda activate "$ENV_NAME"
+# 4. 安装项目本身
+pip install -e .
 
+# 5. 验证
+echo "===== 验证 ====="
 python -c "
 import torch
-import gym
-import mujoco_py
 print('PyTorch:', torch.__version__)
 print('CUDA:', torch.cuda.is_available())
-print('MuJoCo:', mujoco_py.__version__)
+import gym; print('gym:', gym.__version__)
+import mujoco_py; print('MuJoCo:', mujoco_py.__version__)
 "
 
-echo "===== 环境配置完成 ====="
-echo "现在可以提交训练脚本了"
+echo "===== 完成 ====="
+echo "激活方式: source venv/bin/activate"
