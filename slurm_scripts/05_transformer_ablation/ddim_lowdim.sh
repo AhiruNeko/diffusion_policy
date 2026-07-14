@@ -1,0 +1,18 @@
+#!/bin/sh
+#SBATCH --job-name=dp_ddim_lowdim
+#SBATCH --partition=short
+#SBATCH --gres=gpu:a100:1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --time=04:00:00
+#SBATCH --output=logs/dp_ddim_lowdim_%j.out
+# Phase 5: DDIM 快速采样消融
+
+source slurm_scripts/00_env/config.sh
+setup_env
+RESULT_DIR=$(create_result_dir "05_transformer_ablation" "ddim_lowdim_pusht" "diffusion_unet_ddim" "${SLURM_ARRAY_TASK_ID:-42}")
+mkdir -p logs
+python train.py --config-name=train_diffusion_unet_ddim_lowdim_workspace.yaml \
+    training.seed=${SLURM_ARRAY_TASK_ID:-42} training.device=cuda:0 \
+    hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
+save_summary "$RESULT_DIR" "DDIM lowdim PushT" "见论文Fig5" "见论文Fig5"
