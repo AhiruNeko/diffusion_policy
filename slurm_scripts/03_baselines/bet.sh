@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=96G
+#SBATCH --mem=256G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_bet_%j.out
 # Phase 3: BET baseline | Table 4 | 预期: BlockPush p1=0.96, p2=0.71

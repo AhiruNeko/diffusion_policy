@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --gres=gpu:a100:3
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=96G
+#SBATCH --mem=256G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_multirun_%j.out
 # Phase 6: 多种子训练 (3 seeds: 42,43,44) | 需 3 张 GPU 并行
