@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_ablation_horizon_%j.out
 # Phase 5: 动作视界消融 (horizon=4,8,16,32) | 对应论文 Fig 4

@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_bcrnn_%j.out
 # Phase 3: BC-RNN baseline | Table 1 | 预期: Square=0.95/0.73, Can=1.00/0.91, Lift=1.00/0.96

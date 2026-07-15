@@ -2,7 +2,7 @@
 #SBATCH --job-name=dp_setup_env
 #SBATCH --partition=short
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
+#SBATCH --mem=64G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_setup_env_%j.out
 # ============================================
