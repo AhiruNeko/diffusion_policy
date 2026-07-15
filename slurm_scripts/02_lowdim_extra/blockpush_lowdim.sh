@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=64G
+#SBATCH --mem=96G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_blockpush_lowdim_%j.out
 # Phase 2: BlockPush, DP-C | Table 4 | 预期: p1=0.36, p2=0.11

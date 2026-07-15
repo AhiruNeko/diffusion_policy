@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=32
-#SBATCH --mem=64G
+#SBATCH --mem=96G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_transport_lowdim_%j.out
 # Phase 2: Transport low-dim, DP-C | Table 1 | 预期: max=0.94, avg=0.82
