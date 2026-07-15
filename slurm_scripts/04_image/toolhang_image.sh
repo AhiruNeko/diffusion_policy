@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_toolhang_image_%j.out
 # Phase 4: Tool Hang image, DP-C | Table 2 | 预期: max=0.95, avg=0.73
 
