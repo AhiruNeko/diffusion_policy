@@ -3,7 +3,7 @@
 #SBATCH --partition=short
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
-#SBATCH --time=12:00:00
+#SBATCH --time=02:00:00
 #SBATCH --output=logs/setup_venv_%j.out
 # ============================================================================
 # setup_venv.sh — 使用 Python venv 配置 Diffusion Policy 环境
@@ -172,8 +172,14 @@ clean() {
 
 # ---------- 主流程 ----------
 case "${1:-}" in
-    --clean)    clean ;;
-    --verify)   clean 2>/dev/null || true; detect_python; select_torch; create_venv; install_deps; verify ;;
-    --help|-h)  echo "用法: bash setup_venv.sh [--verify|--clean|--help]" ;;
-    *)          detect_python; select_torch; create_venv; install_deps; info "完成! 激活: source $VENV_DIR/bin/activate" ;;
+    --clean)        clean ;;
+    --install-only) detect_python; select_torch; source "$VENV_DIR/bin/activate" 2>/dev/null || { error "venv 不存在，先运行 bash setup_venv.sh"; exit 1; }; install_deps; verify ;;
+    --verify)       clean 2>/dev/null || true; detect_python; select_torch; create_venv; install_deps; verify ;;
+    --help|-h)      echo "用法: bash setup_venv.sh [选项]"
+                    echo "  (无参数)   创建 venv + 安装全部依赖"
+                    echo "  --install-only  只安装依赖（跳过 venv 创建）"
+                    echo "  --verify   创建 + 安装 + 验证"
+                    echo "  --clean    删除 venv"
+                    echo "  --help     显示帮助" ;;
+    *)              detect_python; select_torch; create_venv; install_deps; info "完成! 激活: source $VENV_DIR/bin/activate" ;;
 esac
