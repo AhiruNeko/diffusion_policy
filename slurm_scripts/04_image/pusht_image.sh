@@ -12,4 +12,4 @@ cd ~/projects/diffusion_policy
 mkdir -p logs
 
 python train.py --config-name=image_pusht_diffusion_policy_cnn.yaml \
-    training.seed=42 training.device=cuda:0
+    training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0

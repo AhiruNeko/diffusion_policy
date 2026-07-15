@@ -12,4 +12,4 @@ cd ~/projects/diffusion_policy
 mkdir -p logs
 
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    task=square_lowdim training.seed=42 training.device=cuda:0
+    task=square_lowdim training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0

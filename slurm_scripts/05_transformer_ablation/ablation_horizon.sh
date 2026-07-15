@@ -16,7 +16,7 @@ for H in 4 8 16 32; do
         [ $A -gt $H ] && continue
         TAG="horizon${H}_action${A}"
         RESULT_DIR=$(create_result_dir "05_transformer_ablation" "ablation_horizon" "${TAG}" "${SLURM_ARRAY_TASK_ID:-42}")
-        python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
+        HYDRA_FULL_ERROR=1 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
             horizon=${H} n_action_steps=${A} training.seed=${SLURM_ARRAY_TASK_ID:-42} \
             training.device=cuda:0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
     done

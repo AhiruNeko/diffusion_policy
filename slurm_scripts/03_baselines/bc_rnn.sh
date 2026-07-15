@@ -15,7 +15,7 @@ source slurm_scripts/00_env/config.sh
 setup_env
 RESULT_DIR=$(create_result_dir "03_baselines" "bcrnn_${TASK}" "robomimic_lowdim" "${SLURM_ARRAY_TASK_ID:-42}")
 mkdir -p logs
-python train.py --config-name=train_robomimic_lowdim_workspace.yaml \
+HYDRA_FULL_ERROR=1 python train.py --config-name=train_robomimic_lowdim_workspace.yaml \
     task=${TASK} training.seed=${SLURM_ARRAY_TASK_ID:-42} \
     training.device=cuda:0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
 save_summary "$RESULT_DIR" "BC-RNN ${TASK}" "见表1" "见表1"
