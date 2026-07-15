@@ -199,7 +199,7 @@ class AsyncVectorEnv(VectorEnv):
             pipe.send(("reset", None))
         self._state = AsyncState.WAITING_RESET
 
-    def reset_wait(self, timeout=None):
+    def reset_wait(self, timeout=None, seed=None, options=None):
         """
         Parameters
         ----------
@@ -324,7 +324,10 @@ class AsyncVectorEnv(VectorEnv):
                     "call to `{0}` to complete.".format(self._state.value)
                 )
                 function = getattr(self, "{0}_wait".format(self._state.value))
-                function(timeout)
+                try:
+                    function(timeout)
+                except Exception:
+                    pass
         except mp.TimeoutError:
             terminate = True
 
