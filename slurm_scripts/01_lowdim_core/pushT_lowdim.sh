@@ -11,5 +11,5 @@ source venv/bin/activate
 cd ~/projects/diffusion_policy
 mkdir -p logs
 
-python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
+MUJOCO_GL=egl python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0
