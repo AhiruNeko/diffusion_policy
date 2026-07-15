@@ -1,31 +1,20 @@
 #!/bin/bash
 # ============================================================================
 # Diffusion Policy 复现 — 通用环境配置脚本
-# 支持 conda 和 venv 两种方式，自动检测
+# 固定使用项目目录下的 venv
 # ============================================================================
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+VENV_DIR="$PROJECT_DIR/venv"
 RESULTS_BASE="${RESULTS_BASE:-$PROJECT_DIR/results}"
 
-# ========== 环境激活（自动检测）==========
 setup_env() {
-    # 优先 conda
-    if command -v conda &>/dev/null && conda env list 2>/dev/null | grep -q robodiff; then
-        source "$(conda info --base)/etc/profile.d/conda.sh" 2>/dev/null || true
-        conda activate robodiff
-    # 其次 venv
-    elif [ -f "$PROJECT_DIR/venv/bin/activate" ]; then
-        source "$PROJECT_DIR/venv/bin/activate"
-    # 初次使用：自动创建
-    elif [ -f "$PROJECT_DIR/setup_venv.sh" ]; then
-        echo "未找到环境，正在自动创建..."
-        bash "$PROJECT_DIR/setup_venv.sh"
-        source "$PROJECT_DIR/venv/bin/activate"
-    else
-        echo "错误：找不到 robodiff 环境"
-        echo "请运行: bash $PROJECT_DIR/setup_venv.sh"
+    if [ ! -f "$VENV_DIR/bin/activate" ]; then
+        echo "错误: 找不到 $VENV_DIR/bin/activate"
+        echo "请先运行: bash setup_venv.sh"
         exit 1
     fi
+    source "$VENV_DIR/bin/activate"
     echo "环境就绪: $(python --version), PyTorch $(python -c 'import torch; print(torch.__version__)')"
 }
 
