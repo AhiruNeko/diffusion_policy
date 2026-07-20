@@ -15,11 +15,12 @@ cd ~/projects/diffusion_policy
 ## 2. 核心实验（Priority 1）
 
 ### PushT lowdim (Table 1)
-轻量化（RTX 4060 8GB，~10分钟）：
+轻量化（RTX 4060 8GB，~10分钟，可见4次评估结果）：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 dataloader.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64 \
+    training.rollout_every=5 training.checkpoint_every=5
 ```
 完整训练：
 ```bash
@@ -29,11 +30,12 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 预期: max=0.95, avg=0.91 | A100 ~2h | RTX4060 ~8h
 
 ### Square lowdim (Table 1)
-轻量化（RTX 4060 8GB，~15分钟）：
+轻量化（RTX 4060 8GB，~15分钟，可见4次评估结果）：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=square_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 dataloader.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64 \
+    training.rollout_every=5 training.checkpoint_every=5
 ```
 完整训练：
 ```bash
@@ -43,20 +45,22 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 预期: max=1.00, avg=0.93 | A100 ~3h | RTX4060 ~12h (dataloader.batch_size=128)
 
 ### Can lowdim (Table 1)
-轻量化：
+轻量化（可见4次评估结果）：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=can_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 dataloader.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64 \
+    training.rollout_every=5 training.checkpoint_every=5
 ```
 预期: max=1.00, avg=0.96
 
 ### Lift lowdim (Table 1)
-轻量化（最轻，~5分钟）：
+轻量化（最轻，~5分钟，可见4次评估结果）：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=lift_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 dataloader.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64 \
+    training.rollout_every=5 training.checkpoint_every=5
 ```
 预期: max=1.00, avg=0.98
 
@@ -67,7 +71,8 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=transport_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=10 dataloader.batch_size=32 task.env_runner.n_envs=1
+    training.num_epochs=10 dataloader.batch_size=32 task.env_runner.n_envs=1 \
+    training.rollout_every=5 training.checkpoint_every=5
 ```
 预期: max=0.94, avg=0.82 | 需32核CPU，建议服务器
 
@@ -76,7 +81,8 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=tool_hang_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 dataloader.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64 \
+    training.rollout_every=5 training.checkpoint_every=5
 ```
 预期: max=0.50, avg=0.30
 
@@ -85,7 +91,8 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=image_pusht_diffusion_policy_cnn.yaml \
     training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=10 dataloader.batch_size=16
+    training.num_epochs=10 dataloader.batch_size=16 \
+    training.rollout_every=2 training.checkpoint_every=2
 ```
 完整训练：
 ```bash
@@ -104,11 +111,15 @@ python eval.py --checkpoint data/epoch=0550-test_mean_score=0.969.ckpt \
 cat data/pusht_eval_output/eval_log.json
 ```
 
-## 6. 轻量化验证（本地 10 分钟）
+## 6. 怎么看结果
 ```bash
-python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20
+# 训练完成后，看检查点文件名
+ls data/outputs/2026.07.*/*/checkpoints/*.ckpt
+
+# 用这个命令算 max 和 avg(last10)
+ls data/outputs/2026.07.*/*/checkpoints/epoch=*-test_mean_score=*.ckpt | \
+    sed 's/.*test_mean_score=\([0-9.]*\).ckpt/\1/' | \
+    awk '{a[++n]=$1; if($1>m)m=$1} END{print "Max="m; for(i=n-9;i<=n;i++){if(i>0){s+=a[i];c++}} print "Avg(last" c ")=" s/c}'
 ```
 
 ## 7. 你的 GPU 能跑什么
