@@ -15,55 +15,84 @@ cd ~/projects/diffusion_policy
 ## 2. 核心实验（Priority 1）
 
 ### PushT lowdim (Table 1)
+轻量化（RTX 4060 8GB，~10分钟）：
+```bash
+python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
+    training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=20 training.batch_size=64
+```
+完整训练：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     training.seed=42 training.device=cuda:0 logging.mode=disabled
 ```
-预期: max=0.95, avg=0.91 | A100 ~2h | ✅ 本地 RTX4060 ~8h
+预期: max=0.95, avg=0.91 | A100 ~2h | RTX4060 ~8h
 
 ### Square lowdim (Table 1)
+轻量化（RTX 4060 8GB，~15分钟）：
+```bash
+python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
+    task=square_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=20 training.batch_size=64
+```
+完整训练：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=square_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled
 ```
-预期: max=1.00, avg=0.93 | A100 ~3h
+预期: max=1.00, avg=0.93 | A100 ~3h | RTX4060 ~12h (batch_size=128)
 
 ### Can lowdim (Table 1)
+轻量化：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    task=can_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled
+    task=can_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=20 training.batch_size=64
 ```
-预期: max=1.00, avg=0.96 | A100 ~3h
+预期: max=1.00, avg=0.96
 
 ### Lift lowdim (Table 1)
+轻量化（最轻，~5分钟）：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    task=lift_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled
+    task=lift_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=20 training.batch_size=64
 ```
-预期: max=1.00, avg=0.98 | A100 ~3h
+预期: max=1.00, avg=0.98
 
 ## 3. 扩展实验（Priority 2）
 
 ### Transport lowdim (Table 1)
+轻量化（n_envs=1 减少CPU负载）：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    task=transport_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled
+    task=transport_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=10 training.batch_size=32 task.env_runner.n_envs=1
 ```
-预期: max=0.94, avg=0.82 | 需 32 核 CPU
+预期: max=0.94, avg=0.82 | 需32核CPU，建议服务器
 
 ### ToolHang lowdim (Table 1)
+轻量化：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    task=tool_hang_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled
+    task=tool_hang_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=20 training.batch_size=64
 ```
 预期: max=0.50, avg=0.30
 
 ## 4. PushT image (Table 2)
+轻量化（减小batch_size避免OOM）：
+```bash
+python train.py --config-name=image_pusht_diffusion_policy_cnn.yaml \
+    training.seed=42 training.device=cuda:0 logging.mode=disabled \
+    training.num_epochs=10 training.batch_size=16
+```
+完整训练：
 ```bash
 python train.py --config-name=image_pusht_diffusion_policy_cnn.yaml \
     training.seed=42 training.device=cuda:0 logging.mode=disabled
 ```
-预期: max=0.91, avg=0.84 | A100 ~6h | ⚠️ 需 8GB+ VRAM
+预期: max=0.91, avg=0.84 | A100 ~6h | 建议服务器
 
 ## 5. 评估预训练模型
 ```bash
