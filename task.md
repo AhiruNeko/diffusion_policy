@@ -19,7 +19,7 @@ cd ~/projects/diffusion_policy
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 training.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64
 ```
 完整训练：
 ```bash
@@ -33,21 +33,21 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=square_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 training.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64
 ```
 完整训练：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=square_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled
 ```
-预期: max=1.00, avg=0.93 | A100 ~3h | RTX4060 ~12h (batch_size=128)
+预期: max=1.00, avg=0.93 | A100 ~3h | RTX4060 ~12h (dataloader.batch_size=128)
 
 ### Can lowdim (Table 1)
 轻量化：
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=can_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 training.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64
 ```
 预期: max=1.00, avg=0.96
 
@@ -56,7 +56,7 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=lift_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 training.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64
 ```
 预期: max=1.00, avg=0.98
 
@@ -67,7 +67,7 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=transport_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=10 training.batch_size=32 task.env_runner.n_envs=1
+    training.num_epochs=10 dataloader.batch_size=32 task.env_runner.n_envs=1
 ```
 预期: max=0.94, avg=0.82 | 需32核CPU，建议服务器
 
@@ -76,7 +76,7 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=tool_hang_lowdim training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=20 training.batch_size=64
+    training.num_epochs=20 dataloader.batch_size=64
 ```
 预期: max=0.50, avg=0.30
 
@@ -85,7 +85,7 @@ python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
 ```bash
 python train.py --config-name=image_pusht_diffusion_policy_cnn.yaml \
     training.seed=42 training.device=cuda:0 logging.mode=disabled \
-    training.num_epochs=10 training.batch_size=16
+    training.num_epochs=10 dataloader.batch_size=16
 ```
 完整训练：
 ```bash
