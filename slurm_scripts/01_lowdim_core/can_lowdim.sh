@@ -16,4 +16,4 @@ export PYOPENGL_PLATFORM=egl
 echo "MUJOCO_GL=$MUJOCO_GL"
 
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    task=can_lowdim training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0 checkpoint.topk.k=1 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0
+    task=can_lowdim training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0 checkpoint.topk.k=1 task.env_runner.n_test=15 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0
