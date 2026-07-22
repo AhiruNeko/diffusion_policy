@@ -1,9 +1,9 @@
 #!/bin/sh
 #SBATCH --job-name=dp_blockpush_lowdim
 #SBATCH --partition=short
-#SBATCH --gres=gpu:a100:1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=256G
+#SBATCH --gres=gpu:rtx4080:1
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=128G
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/dp_blockpush_lowdim_%j.out
 # Phase 2: BlockPush, DP-C | Table 4 | 预期: p1=0.36, p2=0.11
@@ -14,5 +14,5 @@ RESULT_DIR=$(create_result_dir "02_lowdim_extra" "blockpush_lowdim" "diffusion_u
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=blockpush_lowdim_seed training.seed=${SLURM_ARRAY_TASK_ID:-42} \
-    training.device=cuda:0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
+    training.device=cuda:0 checkpoint.topk.k=1 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
 save_summary "$RESULT_DIR" "BlockPush low-dim" "0.36(p1)/0.11(p2)" "N/A"
