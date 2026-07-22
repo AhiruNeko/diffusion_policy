@@ -14,5 +14,5 @@ RESULT_DIR=$(create_result_dir "02_lowdim_extra" "toolhang_lowdim" "diffusion_un
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
     task=tool_hang_lowdim training.seed=${SLURM_ARRAY_TASK_ID:-42} \
-    training.device=cuda:0 checkpoint.topk.k=1 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
+    training.device=cuda:0 task.env_runner.n_test=15 checkpoint.topk.k=1 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
 save_summary "$RESULT_DIR" "Tool Hang low-dim" "0.50" "0.30"

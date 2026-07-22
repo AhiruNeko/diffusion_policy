@@ -17,5 +17,5 @@ RESULT_DIR=$(create_result_dir "03_baselines" "ibc_${TASK}" "ibc_dfo_lowdim" "${
 mkdir -p logs
 HYDRA_FULL_ERROR=1 python train.py --config-name=train_ibc_dfo_lowdim_workspace.yaml \
     task=${TASK} training.seed=${SLURM_ARRAY_TASK_ID:-42} \
-    training.device=cuda:0 checkpoint.topk.k=1 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
+    training.device=cuda:0 task.env_runner.n_test=15 checkpoint.topk.k=1 checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0 hydra.run.dir="$RESULT_DIR" 2>&1 | tee "$RESULT_DIR/train.log"
 save_summary "$RESULT_DIR" "IBC ${TASK}" "见表1" "见表1"
