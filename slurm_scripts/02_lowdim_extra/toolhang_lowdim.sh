@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:rtx4080:1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=128G
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --output=logs/dp_toolhang_lowdim_%j.out
 # Phase 2: Tool Hang low-dim, DP-C | Table 1 | 预期: max=0.50, avg=0.30 (较难)
 

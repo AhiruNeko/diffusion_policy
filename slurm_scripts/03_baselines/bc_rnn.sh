@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:rtx4080:1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=128G
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --output=logs/dp_bcrnn_%j.out
 # Phase 3: BC-RNN baseline | Table 1 | 预期: Square=0.95/0.73, Can=1.00/0.91, Lift=1.00/0.96
 # 需要手动改 TASK 变量

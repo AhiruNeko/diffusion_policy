@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:rtx4080:3
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=128G
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --output=logs/dp_multirun_%j.out
 # Phase 6: 多种子训练 (3 seeds: 42,43,44) | 需 3 张 GPU 并行
 

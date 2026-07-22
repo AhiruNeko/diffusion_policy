@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:rtx4080:1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=128G
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --output=logs/dp_ibc_%j.out
 # Phase 3: IBC baseline | Table 1 | 预期: PushT=0.90/0.84, Square/Can/Lift=0.00
 # 需要手动改 TASK 变量切换任务: pusht_lowdim / square_lowdim / can_lowdim / lift_lowdim
