@@ -8,8 +8,7 @@
 # Phase 2: Transport low-dim, DP-C | Table 1 | 预期: max=0.94, avg=0.82
 # 注意: 需 32 CPU (n_envs=28), 必须服务器
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 RESULT_DIR=$(create_result_dir "02_lowdim_extra" "transport_lowdim" "diffusion_unet_lowdim" "${SLURM_ARRAY_TASK_ID:-42}")
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \

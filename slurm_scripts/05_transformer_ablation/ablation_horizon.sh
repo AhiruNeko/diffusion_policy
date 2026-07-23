@@ -7,8 +7,7 @@
 #SBATCH --output=logs/dp_ablation_horizon_%j.out
 # Phase 5: 动作视界消融 (horizon=4,8,16,32) | 对应论文 Fig 4
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 
 for H in 4 8 16 32; do
     for A in 2 4 8 16; do

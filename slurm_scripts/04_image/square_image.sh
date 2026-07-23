@@ -7,8 +7,7 @@
 #SBATCH --output=logs/dp_square_image_%j.out
 # Phase 4: Square image, DP-C | Table 2 | 预期: max=0.98, avg=0.92
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 RESULT_DIR=$(create_result_dir "04_image" "square_image" "diffusion_unet_hybrid" "${SLURM_ARRAY_TASK_ID:-42}")
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_hybrid_workspace.yaml \

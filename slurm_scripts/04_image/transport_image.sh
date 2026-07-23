@@ -8,8 +8,7 @@
 # Phase 4: Transport image, DP-C | Table 2 | 预期: max=1.00, avg=0.93
 # 注意: 需 32 CPU + 96G 内存, 必须服务器
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 RESULT_DIR=$(create_result_dir "04_image" "transport_image" "diffusion_unet_hybrid" "${SLURM_ARRAY_TASK_ID:-42}")
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_hybrid_workspace.yaml \

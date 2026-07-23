@@ -7,8 +7,7 @@
 #SBATCH --output=logs/dp_blockpush_lowdim_%j.out
 # Phase 2: BlockPush, DP-C | Table 4 | 预期: p1=0.36, p2=0.11
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 RESULT_DIR=$(create_result_dir "02_lowdim_extra" "blockpush_lowdim" "diffusion_unet_lowdim" "${SLURM_ARRAY_TASK_ID:-42}")
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \

@@ -7,8 +7,7 @@
 #SBATCH --output=logs/dp_multirun_%j.out
 # Phase 6: 多种子训练 (3 seeds: 42,43,44) | 需 3 张 GPU 并行
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 
 cd "$PROJECT_DIR"
 mkdir -p logs

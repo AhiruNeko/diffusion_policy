@@ -7,8 +7,7 @@
 #SBATCH --output=logs/dp_kitchen_lowdim_%j.out
 # Phase 2: Kitchen, DP-C | Table 4 | 预期: 4st 1.00/1.00/1.00/0.99
 
-source slurm_scripts/00_env/config.sh
-setup_env
+source venv/bin/activate
 RESULT_DIR=$(create_result_dir "02_lowdim_extra" "kitchen_lowdim" "diffusion_unet_lowdim" "${SLURM_ARRAY_TASK_ID:-42}")
 mkdir -p logs
 python train.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
