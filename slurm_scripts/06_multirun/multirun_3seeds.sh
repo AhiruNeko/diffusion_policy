@@ -11,4 +11,4 @@ cd ~/projects/diffusion_policy
 mkdir -p logs
 
 python multi_run.py --config-name=train_diffusion_unet_lowdim_workspace.yaml \
-    training.seed=42,43,44 task.env_runner.n_envs=1 training.device=cuda:0
+    training.seed=42,43,44 task.env_runner.n_envs=24 training.device=cuda:0

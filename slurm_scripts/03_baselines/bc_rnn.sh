@@ -14,4 +14,4 @@ mkdir -p logs
 
 python train.py --config-name=train_robomimic_lowdim_workspace.yaml \
     task=${TASK} training.seed=${SLURM_ARRAY_TASK_ID:-42} \
-    task.env_runner.n_envs=1 training.device=cuda:0
+    task.env_runner.n_envs=24 training.device=cuda:0
