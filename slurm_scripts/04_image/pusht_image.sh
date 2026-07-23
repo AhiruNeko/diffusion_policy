@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #SBATCH --job-name=dp_pusht_image
 #SBATCH --partition=short
 #SBATCH --gres=gpu:rtx4080:1
@@ -10,5 +10,13 @@ source venv/bin/activate
 cd ~/projects/diffusion_policy
 mkdir -p logs
 
-MUJOCO_GL=egl python train.py --config-name=image_pusht_diffusion_policy_cnn.yaml \
-    training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0 training.rollout_every=100 training.checkpoint_every=100 checkpoint.topk.k=1 checkpoint.topk.monitor_key=test_mean_score checkpoint.topk.mode=max checkpoint.save_last_ckpt=False task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0
+export MUJOCO_GL=egl
+export PYOPENGL_PLATFORM=egl
+echo "MUJOCO_GL=$MUJOCO_GL"
+
+python train.py --config-name=train_diffusion_unet_image_workspace \
+    task=pusht_image training.seed=42 task.env_runner.n_envs=1 training.device=cuda:0 \
+    training.rollout_every=100 training.checkpoint_every=100 \
+    checkpoint.topk.k=1 checkpoint.topk.monitor_key=test_mean_score \
+    checkpoint.topk.mode=max checkpoint.save_last_ckpt=False \
+    task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0
