@@ -10,6 +10,10 @@ source venv/bin/activate
 cd ~/projects/diffusion_policy
 mkdir -p logs
 
+export MUJOCO_GL=egl
+export PYOPENGL_PLATFORM=egl
+echo "MUJOCO_GL=$MUJOCO_GL"
+
 python train.py --config-name=train_robomimic_lowdim_workspace.yaml \
     task=transport_lowdim training.seed=${SLURM_ARRAY_TASK_ID:-42} \
     task.env_runner.n_envs=24 training.device=cuda:0 \
