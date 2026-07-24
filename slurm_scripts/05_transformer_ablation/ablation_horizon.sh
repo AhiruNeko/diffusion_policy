@@ -18,7 +18,7 @@ for H in 4 8 16 32; do
             horizon=${H} n_action_steps=${A} \
             training.seed=${SLURM_ARRAY_TASK_ID:-42} \
             task.env_runner.n_envs=24 training.device=cuda:0 \
-            training.rollout_every=100 training.checkpoint_every=100 \
+            \
             checkpoint.topk.k=1 checkpoint.topk.monitor_key=test_mean_score \
             checkpoint.topk.mode=max checkpoint.save_last_ckpt=False \
             task.env_runner.n_test_vis=1 task.env_runner.n_train_vis=0
