@@ -100,4 +100,6 @@ train.log
 packages/
 venv/
 
+network/
+
 GPU_cluster_data/
